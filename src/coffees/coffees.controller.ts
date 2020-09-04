@@ -8,11 +8,13 @@ import {
   Delete,
   Query,
   Put,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { Coffee } from './entities/coffee.entity';
 import { CreateCoffeeDto, UpdateCoffeeDto } from './dto';
 import { PaginationQueryDto } from 'src/common/dto';
+import { Public, Protocol } from 'src/common/decorators';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -29,14 +31,17 @@ export class CoffeesController {
    * GET
    */
   @Get()
+  @Public()
   async getAll(
+    @Protocol() protocol: string,
     @Query() paginationQuery: PaginationQueryDto,
   ): Promise<Coffee[]> {
+    console.log('protocol =>', protocol);
     return await this._coffeesService.findAll(paginationQuery);
   }
 
   @Get(':id')
-  async getCoffeeById(@Param('id') id: number): Promise<Coffee> {
+  async getCoffeeById(@Param('id', ParseIntPipe) id: number): Promise<Coffee> {
     return await this._coffeesService.findOne(id);
   }
 
