@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Connection } from 'typeorm';
 import { CreateCoffeeDto, UpdateCoffeeDto } from './dto';
@@ -6,6 +7,7 @@ import { Coffee } from './entities/coffee.entity';
 import { Flavour } from './entities';
 import { PaginationQueryDto } from 'src/common/dto';
 import { Event } from 'src/events/entities';
+
 @Injectable()
 export class CoffeesService {
   constructor(
@@ -14,7 +16,12 @@ export class CoffeesService {
     @InjectRepository(Flavour)
     private readonly _flavourRepository: Repository<Flavour>,
     private readonly _connection: Connection,
-  ) {}
+    private readonly _configService: ConfigService,
+  ) {
+    /* Accessing process.env variables from ConfigService */
+    const databaseHost = this._configService.get<string>('DATABASE_HOST');
+    // console.log('DATABASE_HOST =>', databaseHost);
+  }
 
   async create(createCoffeeDto: CreateCoffeeDto): Promise<Coffee> {
     const flavours = await Promise.all(
