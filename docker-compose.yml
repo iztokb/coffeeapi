@@ -6,5 +6,4 @@ services:
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_
       POSTGRES_PASSWORD: pass123
